@@ -10,7 +10,15 @@ namespace Animation
     {
         void DisplayString(string str);
 
+        int GetButtonIndex(object obj);
+
+        void SwapState();
+
         event EventHandler<EventArgs> btnPressed;
+
+        event EventHandler<EventArgs> onBtnPressed;
+
+
 
     }
 }

@@ -27,16 +27,18 @@ namespace Animation
 
         public MainWindow()
         {
-            generator = new Random(10000000);
             
+            generator = new Random(10000000);
             InitializeComponent();
             buttons = canvasKeyboard.Children;
             foreach (ContentControl ctrl in buttons)
-                ctrl.RenderTransform = new TranslateTransform();
-
-            
+                ctrl.RenderTransform = new TranslateTransform();            
             labels = panelDisplay.Children;
-            
+
+            this.state = true;
+            SwapState();
+
+            ViewModel vm = new ViewModel(this);
 
         }
 
@@ -49,15 +51,13 @@ namespace Animation
 
         private void btn_Click(object sender, RoutedEventArgs e)
         {
+            btnPressed(sender, e);          
+            MixButtons(0.35, 0);   
+        }
 
-            btnPressed(sender, e);
-
-            Button btn = sender as Button;
-            int num = buttons.IndexOf(btn);
-            DisplayString(num.ToString());
-            
-            MixButtons(0.35, 0);
-            
+        private void onBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SwapState();
         }
 
         // generates and runs correct pair swapping will all elements
@@ -189,10 +189,13 @@ namespace Animation
 
         public void DisplayString(string str)
         {
+            if (str.Length == 0)
+                Clear();
+
             if (str.Length > 6)
             {
                 //lbl0.Content = "1";
-                for (int i = 0; i < labels.Count; ++i)
+                for (int i = labels.Count-1; i >=0 ; --i)
                 {
                     (labels[i] as Label).Content = '?';
                 }
@@ -201,11 +204,11 @@ namespace Animation
             else
             {
                 Clear();
-                for (int i = 0; i < str.Length; ++i)
+                for (int i = labels.Count - 1, j = 0; i >= labels.Count - str.Length; --i, ++j)
                 {
                     Label lbl = labels[i] as Label;
                     if (lbl != null)
-                        lbl.Content = str[i];
+                        lbl.Content = str[str.Length - 1 - j];
                 }
             }
         }
@@ -221,5 +224,39 @@ namespace Animation
         }
 
         public event EventHandler<EventArgs> btnPressed;
+
+
+        public int GetButtonIndex(object obj)
+        {
+            Button btn = obj as Button;
+            if (btn == null)
+                return -1;
+            int num = buttons.IndexOf(btn);
+            return num;
+        }
+
+
+        private bool state;
+
+        public void SwapState()
+        {
+            if (state == false)
+                state = true;
+            else
+                state = false;
+
+            if (state == false)
+            {
+                foreach (ContentControl ctrl in buttons)
+                    if (ctrl.Name != "btnOn")
+                        ctrl.IsEnabled = false;
+            }
+            else
+                foreach (ContentControl ctrl in buttons)
+                    ctrl.IsEnabled = true;
+
+        }
+
+        public event EventHandler<EventArgs> onBtnPressed;
     }
 }

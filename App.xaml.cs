@@ -19,6 +19,19 @@ namespace Animation
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            //base.OnStartup(e);
+
+
+            ////this.MainWindow = new MainWindow();
+            //MainWindow window = new MainWindow();
+            //IView view = (MainWindow)this.MainWindow;
+            //ViewModel vm = new ViewModel(view);
+            ////window.DataContext = vm;
+            ////window.Show();
+        }
+
 
         public void btnMouseEnter(object sender, MouseEventArgs e)
         {
@@ -32,11 +45,6 @@ namespace Animation
             Ellipse ellipse = grid.FindName("ellipse") as Ellipse;
             if (ellipse == null)
                 return;
-
-            
-
-            
-
         }
 
     }

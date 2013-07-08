@@ -11,7 +11,7 @@
                         
                         >
             <Rectangle x:Name="rect" Width="30" Opacity="0.0" />
-            <StackPanel x:Name="panelDisplay" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <StackPanel x:Name="panelDisplay" Orientation="Horizontal" >
                 <Label x:Name="lbl7" Style="{StaticResource LabelDisplayStyle}" />  
                 <Label x:Name="lbl6" Style="{StaticResource LabelDisplayStyle}" />  
                 <Label x:Name="lbl5" Style="{StaticResource LabelDisplayStyle}" />            
@@ -108,7 +108,6 @@
                     8
                 </Button>
 
-
                 <Button x:Name="btn9" Style="{StaticResource ButtonKeyboardStyle}"
                         Canvas.Left="184"
                         Canvas.Top="20"
@@ -149,7 +148,24 @@
                     /
                 </Button>
 
-            </Canvas>
+            <Button x:Name="btnEqu" Style="{StaticResource ButtonKeyboardStyle}"
+                        Canvas.Left="184"
+                        Canvas.Top="200"
+                        Click="btn_Click"
+                        >
+                =
+            </Button>
+
+            <Button x:Name="btnOn" Style="{StaticResource ButtonKeyboardStyle}"
+                        Background="DarkRed"
+                        Canvas.Left="24"
+                        Canvas.Top="200"
+                        Click="onBtn_Click"
+                        >
+                On
+            </Button>
+
+        </Canvas>
             <Rectangle Height="1" Fill="Black" Opacity="1"/>
         </StackPanel>
 
