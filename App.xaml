@@ -12,27 +12,7 @@
             <Setter Property="FontWeight" Value="ExtraBold" />
             <Setter Property="FontStretch" Value="UltraExpanded" />
             <Setter Property="Foreground" Value="White" />
-            <!--<Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="grid" >
-                            <Ellipse x:Name="ellipse" Fill="{TemplateBinding Background}"
-                                     >
-                                
-                            </Ellipse>
-                            
-                            <ContentPresenter x:Name="content" HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              TextElement.Foreground="{TemplateBinding Foreground}"
-                                              />
-                            
-                        </Grid>
-                        
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>-->
-
-            <EventSetter Event="MouseEnter" Handler="btnMouseEnter" />
+            <EventSetter Event="MouseEnter" Handler="btnMouseEnter" />          
             
         </Style>
         

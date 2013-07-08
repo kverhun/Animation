@@ -27,19 +27,14 @@ namespace Animation
 
         public MainWindow()
         {
-            
             generator = new Random(10000000);
             InitializeComponent();
             buttons = canvasKeyboard.Children;
             foreach (ContentControl ctrl in buttons)
                 ctrl.RenderTransform = new TranslateTransform();            
             labels = panelDisplay.Children;
-
             this.state = true;
-            //SwapState();
-
             ViewModel vm = new ViewModel(this);
-
         }
 
 
@@ -52,7 +47,7 @@ namespace Animation
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             btnPressed(sender, e);          
-            MixButtons(0.35, 0);   
+            MixButtons(0.25, 0);   
         }
 
         private void onBtn_Click(object sender, RoutedEventArgs e)
@@ -133,12 +128,16 @@ namespace Animation
             anim1x.BeginTime = TimeSpan.FromSeconds(secWait);            
             anim1x.AutoReverse = false;
             
+
             // vertical animation for #1
             DoubleAnimation anim1y = new DoubleAnimation();
             anim1y.By = acttop2 - acttop1;
             anim1y.Duration = new Duration(TimeSpan.FromSeconds(secDuration));
             anim1y.BeginTime = TimeSpan.FromSeconds(secWait);           
             anim1y.AutoReverse = false;
+
+            
+
 
             // horizontal animation for #2
             DoubleAnimation anim2x = new DoubleAnimation();
@@ -178,6 +177,12 @@ namespace Animation
                 anim2y.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
             }
 
+            //anim1y.Completed += (o, s) => ctrl1.IsEnabled = true;
+            //anim2y.Completed += (o, s) => ctrl2.IsEnabled = true;
+
+            //ctrl1.IsEnabled = false;
+            //ctrl2.IsEnabled = false;
+
             // starting animations
             ctrl1.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim1x);
             ctrl1.RenderTransform.BeginAnimation(TranslateTransform.YProperty, anim1y);
@@ -192,7 +197,7 @@ namespace Animation
             if (str.Length == 0)
                 Clear();
 
-            if (str.Length > 6)
+            if (str.Length > labels.Count)
             {
                 //lbl0.Content = "1";
                 for (int i = labels.Count-1; i >=0 ; --i)
@@ -246,37 +251,30 @@ namespace Animation
                 state = false;
 
             if (state == false)
-            {
-                foreach (ContentControl ctrl in buttons)
-                    if (ctrl.Name != "btnOn")
-                        ctrl.IsEnabled = false;
-            }
+                DisableButtons();
             else
-                foreach (ContentControl ctrl in buttons)
-                    ctrl.IsEnabled = true;
+                EnableButtons();
 
         }
+        
+
+        // disables all buttons except of "On-Button"
+        private void DisableButtons()
+        {
+            foreach (ContentControl ctrl in buttons)
+                if (ctrl.Name != "btnOn")
+                    ctrl.IsEnabled = false;
+        }
+
+        private void EnableButtons()
+        {
+            foreach (ContentControl ctrl in buttons)
+                //if (ctrl.Name != "btnOn")
+                    ctrl.IsManipulationEnabled = true;
+        }
+
 
         public event EventHandler<EventArgs> onBtnPressed;
 
-        private void btn_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (state == false)
-            {
-                for (int i = 0; i < labels.Count; ++i)
-                {
-                    //((labels[i] as Label).Background as SolidColorBrush).Color = System.Windows.Media.Colors.Black;
-                    
-                }
-            }
-            else
-            {
-                for (int i = 0; i < labels.Count; ++i)
-                {
-                    ((labels[i] as Label).Background as SolidColorBrush).Color = System.Windows.Media.Colors.LightYellow;
-
-                }
-            }
-        }
     }
 }
