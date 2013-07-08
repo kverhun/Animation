@@ -21,7 +21,7 @@ namespace Animation
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IView
     {
         private Random generator;
 
@@ -33,22 +33,34 @@ namespace Animation
             buttons = canvasKeyboard.Children;
             foreach (ContentControl ctrl in buttons)
                 ctrl.RenderTransform = new TranslateTransform();
+
+            
+            labels = panelDisplay.Children;
+            
+
         }
 
+
+        // controls on "keyboard" will be stored here
         private UIElementCollection buttons;
 
-        private void btn1_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
+        // labels on "dislay" will be stored here
+        private UIElementCollection labels;
 
         private void btn_Click(object sender, RoutedEventArgs e)
         {
-            MixButtons(0.35, 0);
 
-            //SwapButtonsSequence(25, 5);
+            btnPressed(sender, e);
+
+            Button btn = sender as Button;
+            int num = buttons.IndexOf(btn);
+            DisplayString(num.ToString());
+            
+            MixButtons(0.35, 0);
+            
         }
 
+        // generates and runs correct pair swapping will all elements
         private void MixButtons(double secDuration, double secWait)
         {
             int count = canvasKeyboard.Children.Count;
@@ -80,90 +92,69 @@ namespace Animation
             }
         }
 
-
-        private void btn9_Click(object sender, RoutedEventArgs e)
-        {
-            int ind1 = generator.Next() % (buttons.Count );
-            int ind2 = generator.Next() % (buttons.Count );
-            SwapButtons(ind1, ind2, 2, 0.5);
-        }
-
-        private void SwapButtonsSequence(int count, double secDuration)
-        {
-            double secDurationOne = secDuration / count;
-            Duration duration = new Duration(TimeSpan.FromSeconds(secDurationOne));
-            for (int i = 0; i < count; ++i)
-            {
-                int ind1 = generator.Next() % (buttons.Count);
-                int ind2 = generator.Next() % (buttons.Count);
-                SwapButtons(ind1, ind2, secDurationOne, i * secDurationOne);
-            }
-
-        }
-
-
+        // runs animation for swapping two controls
         private void SwapButtons(int ind1, int ind2, double secDuration, double secWait)
         {
+            // nothing to swap
             if (ind1 == ind2) return;
 
             ContentControl ctrl1 = buttons[ind1] as ContentControl;
             ContentControl ctrl2 = buttons[ind2] as ContentControl;
 
+            // if something went wrong
             if (ctrl1 == null || ctrl2 == null)
                 return;
-
+            
             double secHDuration = secDuration / 2;
 
-            var top1 = Canvas.GetTop(ctrl1);// -(ctrl1.RenderTransform as TranslateTransform).Y;
-            var left1 = Canvas.GetLeft(ctrl1);// +(ctrl1.RenderTransform as TranslateTransform).X;
-            var top2 = Canvas.GetTop(ctrl2);// -(ctrl2.RenderTransform as TranslateTransform).Y;
-            var left2 = Canvas.GetLeft(ctrl2);// +(ctrl2.RenderTransform as TranslateTransform).X;
+            // start positions
+            var top1 = Canvas.GetTop(ctrl1);
+            var left1 = Canvas.GetLeft(ctrl1);
+            var top2 = Canvas.GetTop(ctrl2);
+            var left2 = Canvas.GetLeft(ctrl2);
 
+
+            // offsets
             var offsetX1 = (ctrl1.RenderTransform as TranslateTransform).X;
             var offsetY1 = (ctrl1.RenderTransform as TranslateTransform).Y;
             var offsetX2 = (ctrl2.RenderTransform as TranslateTransform).X;
             var offsetY2 = (ctrl2.RenderTransform as TranslateTransform).Y;
 
+            // actual position
             var acttop1 = top1 + offsetY1;
             var acttop2 = top2 + offsetY2;
             var actleft1 = left1 + offsetX1;
             var actleft2 = left2 + offsetX2;
 
+            // horizontal animation for #1
             DoubleAnimation anim1x = new DoubleAnimation();
-            //anim1x.From = (ctrl1.RenderTransform as TranslateTransform).X;
             anim1x.By = actleft2 - actleft1;
-            //anim1x.To = offsetX1 + actleft2 - actleft1;
             anim1x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
-            anim1x.BeginTime = TimeSpan.FromSeconds(secWait);
-            
+            anim1x.BeginTime = TimeSpan.FromSeconds(secWait);            
             anim1x.AutoReverse = false;
             
+            // vertical animation for #1
             DoubleAnimation anim1y = new DoubleAnimation();
-            //anim1y.From = (ctrl1.RenderTransform as TranslateTransform).Y;
-            //anim1y.To = offsetY1 + acttop2 - acttop1;
             anim1y.By = acttop2 - acttop1;
             anim1y.Duration = new Duration(TimeSpan.FromSeconds(secDuration));
-            anim1y.BeginTime = TimeSpan.FromSeconds(secWait);
-            
+            anim1y.BeginTime = TimeSpan.FromSeconds(secWait);           
             anim1y.AutoReverse = false;
 
+            // horizontal animation for #2
             DoubleAnimation anim2x = new DoubleAnimation();
-            //anim1x.From = (ctrl2.RenderTransform as TranslateTransform).X;
-            //anim2x.To = offsetX2 + actleft1 - actleft2;
             anim2x.By = actleft1 - actleft2;
             anim2x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
             anim2x.BeginTime = TimeSpan.FromSeconds(secWait);
-            
             anim2x.AutoReverse = false;
 
+            // vertical animation for #2
             DoubleAnimation anim2y = new DoubleAnimation();
-            //anim1y.From = (ctrl2.RenderTransform as TranslateTransform).Y;
-            //anim2y.To = offsetY2 + acttop1 - acttop2;
             anim2y.By = acttop1 - acttop2;
             anim2y.Duration = new Duration(TimeSpan.FromSeconds(secDuration));
             anim2y.BeginTime = TimeSpan.FromSeconds(secWait);            
             anim2y.AutoReverse = false;
 
+            // makes different paths if animation is only horisontal
             if (actleft1 == actleft2)
             {
                 anim1x.By = 30;
@@ -175,6 +166,7 @@ namespace Animation
                 anim2x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
             }
 
+            // makes different paths if animation is only vertical
             if (acttop1 == acttop2)
             {
                 anim1y.By = 30;
@@ -186,20 +178,48 @@ namespace Animation
                 anim2y.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
             }
 
-                       
+            // starting animations
             ctrl1.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim1x);
             ctrl1.RenderTransform.BeginAnimation(TranslateTransform.YProperty, anim1y);
             ctrl2.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim2x);
             ctrl2.RenderTransform.BeginAnimation(TranslateTransform.YProperty, anim2y);
 
-                        
-            Canvas.SetTop(ctrl1, Canvas.GetTop(ctrl1));// - (ctrl1.RenderTransform as TranslateTransform).Y);
-            Canvas.SetLeft(ctrl1, Canvas.GetLeft(ctrl1));// + (ctrl1.RenderTransform as TranslateTransform).X);
-            Canvas.SetTop(ctrl2, Canvas.GetTop(ctrl2));// - (ctrl2.RenderTransform as TranslateTransform).Y);
-            Canvas.SetLeft(ctrl2, Canvas.GetLeft(ctrl2));// + (ctrl2.RenderTransform as TranslateTransform).X);
-
-
         }
 
+
+        public void DisplayString(string str)
+        {
+            if (str.Length > 6)
+            {
+                //lbl0.Content = "1";
+                for (int i = 0; i < labels.Count; ++i)
+                {
+                    (labels[i] as Label).Content = '?';
+                }
+
+            }
+            else
+            {
+                Clear();
+                for (int i = 0; i < str.Length; ++i)
+                {
+                    Label lbl = labels[i] as Label;
+                    if (lbl != null)
+                        lbl.Content = str[i];
+                }
+            }
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < labels.Count; ++i)
+            {
+                Label lbl = labels[i] as Label;
+                if (lbl != null)
+                    lbl.Content = "";
+            }
+        }
+
+        public event EventHandler<EventArgs> btnPressed;
     }
 }

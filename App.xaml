@@ -4,19 +4,53 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style x:Key="ButtonKeyboardStyle" TargetType="Button">
-            
+            <Style.Resources>
+                
+            </Style.Resources>
             <Setter Property="Width" Value="50" />
             <Setter Property="Height" Value="40" />
+            <Setter Property="Background" Value="Gray" />
+            <Setter Property="Opacity" Value="0.9" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="FontStretch" Value="UltraExpanded" />
+            <Setter Property="Foreground" Value="White" />
+            <!--<Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="grid" >
+                            <Ellipse x:Name="ellipse" Fill="{TemplateBinding Background}"
+                                     >
+                                
+                            </Ellipse>
+                            
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              />
+                            
+                        </Grid>
+                        
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>-->
+
+            <EventSetter Event="MouseEnter" Handler="btnMouseEnter" />
             
         </Style>
         
         <Style x:Key="LabelDisplayStyle" TargetType="Label">
-            <Setter Property="Height" Value="60" />
-            <Setter Property="Width" Value="50" />            
+            <Setter Property="Height" Value="55" />
+            <Setter Property="Width" Value="35" />            
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Background" Value="DarkGoldenrod" />
+            <Setter Property="Background" Value="LightYellow" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Opacity" Value="0.2" />
+            <Setter Property="Opacity" Value="0.8" />
+            <Setter Property="TextBlock.HorizontalAlignment" Value="Center" />
+            <Setter Property="TextBlock.VerticalAlignment" Value="Center" />
+            <Setter Property="TextBlock.FontSize" Value="36" />
+            
+                
         </Style>
         
     </Application.Resources>
