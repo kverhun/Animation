@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Windows.Threading;
 using System.Windows.Media.Animation;
 
 namespace Animation
@@ -27,7 +28,7 @@ namespace Animation
         public MainWindow()
         {
             generator = new Random(10000000);
-
+            
             InitializeComponent();
             buttons = canvasKeyboard.Children;
             foreach (ContentControl ctrl in buttons)
@@ -42,6 +43,13 @@ namespace Animation
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
+        {
+            MixButtons(0.35, 0);
+
+            //SwapButtonsSequence(25, 5);
+        }
+
+        private void MixButtons(double secDuration, double secWait)
         {
             int count = canvasKeyboard.Children.Count;
             int[] swap = new int[count];
@@ -68,20 +76,33 @@ namespace Animation
 
             for (int i = 0; i < swappers.Length; ++i)
             {
-                SwapButtons(swappers[i], swapperValues[i], 0.3);
+                SwapButtons(swappers[i], swapperValues[i], secDuration, secWait + i*(secDuration*1));               
             }
-
-
         }
+
 
         private void btn9_Click(object sender, RoutedEventArgs e)
         {
             int ind1 = generator.Next() % (buttons.Count );
             int ind2 = generator.Next() % (buttons.Count );
-            SwapButtons(ind1, ind2, 0.3);
+            SwapButtons(ind1, ind2, 2, 0.5);
         }
 
-        private void SwapButtons(int ind1, int ind2, double sec)
+        private void SwapButtonsSequence(int count, double secDuration)
+        {
+            double secDurationOne = secDuration / count;
+            Duration duration = new Duration(TimeSpan.FromSeconds(secDurationOne));
+            for (int i = 0; i < count; ++i)
+            {
+                int ind1 = generator.Next() % (buttons.Count);
+                int ind2 = generator.Next() % (buttons.Count);
+                SwapButtons(ind1, ind2, secDurationOne, i * secDurationOne);
+            }
+
+        }
+
+
+        private void SwapButtons(int ind1, int ind2, double secDuration, double secWait)
         {
             if (ind1 == ind2) return;
 
@@ -90,6 +111,8 @@ namespace Animation
 
             if (ctrl1 == null || ctrl2 == null)
                 return;
+
+            double secHDuration = secDuration / 2;
 
             var top1 = Canvas.GetTop(ctrl1);// -(ctrl1.RenderTransform as TranslateTransform).Y;
             var left1 = Canvas.GetLeft(ctrl1);// +(ctrl1.RenderTransform as TranslateTransform).X;
@@ -110,29 +133,58 @@ namespace Animation
             //anim1x.From = (ctrl1.RenderTransform as TranslateTransform).X;
             anim1x.By = actleft2 - actleft1;
             //anim1x.To = offsetX1 + actleft2 - actleft1;
-            anim1x.Duration = new Duration(TimeSpan.FromSeconds(sec));
+            anim1x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+            anim1x.BeginTime = TimeSpan.FromSeconds(secWait);
+            
             anim1x.AutoReverse = false;
-
+            
             DoubleAnimation anim1y = new DoubleAnimation();
             //anim1y.From = (ctrl1.RenderTransform as TranslateTransform).Y;
             //anim1y.To = offsetY1 + acttop2 - acttop1;
             anim1y.By = acttop2 - acttop1;
-            anim1y.Duration = new Duration(TimeSpan.FromSeconds(sec));
+            anim1y.Duration = new Duration(TimeSpan.FromSeconds(secDuration));
+            anim1y.BeginTime = TimeSpan.FromSeconds(secWait);
+            
             anim1y.AutoReverse = false;
 
             DoubleAnimation anim2x = new DoubleAnimation();
             //anim1x.From = (ctrl2.RenderTransform as TranslateTransform).X;
             //anim2x.To = offsetX2 + actleft1 - actleft2;
             anim2x.By = actleft1 - actleft2;
-            anim2x.Duration = new Duration(TimeSpan.FromSeconds(sec));
+            anim2x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+            anim2x.BeginTime = TimeSpan.FromSeconds(secWait);
+            
             anim2x.AutoReverse = false;
 
             DoubleAnimation anim2y = new DoubleAnimation();
             //anim1y.From = (ctrl2.RenderTransform as TranslateTransform).Y;
             //anim2y.To = offsetY2 + acttop1 - acttop2;
             anim2y.By = acttop1 - acttop2;
-            anim2y.Duration = new Duration(TimeSpan.FromSeconds(sec));
+            anim2y.Duration = new Duration(TimeSpan.FromSeconds(secDuration));
+            anim2y.BeginTime = TimeSpan.FromSeconds(secWait);            
             anim2y.AutoReverse = false;
+
+            if (actleft1 == actleft2)
+            {
+                anim1x.By = 30;
+                anim1x.AutoReverse = true;
+                anim1x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+
+                anim2x.By = -30;
+                anim2x.AutoReverse = true;
+                anim2x.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+            }
+
+            if (acttop1 == acttop2)
+            {
+                anim1y.By = 30;
+                anim1y.AutoReverse = true;
+                anim1y.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+
+                anim2y.By = -30;
+                anim2y.AutoReverse = true;
+                anim2y.Duration = new Duration(TimeSpan.FromSeconds(secHDuration));
+            }
 
                        
             ctrl1.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim1x);
@@ -140,10 +192,6 @@ namespace Animation
             ctrl2.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim2x);
             ctrl2.RenderTransform.BeginAnimation(TranslateTransform.YProperty, anim2y);
 
-                      
-            //backgroundWorker.DoWork += (s,e) => {
-            //    Thread.Sleep(3000);
-            //}
                         
             Canvas.SetTop(ctrl1, Canvas.GetTop(ctrl1));// - (ctrl1.RenderTransform as TranslateTransform).Y);
             Canvas.SetLeft(ctrl1, Canvas.GetLeft(ctrl1));// + (ctrl1.RenderTransform as TranslateTransform).X);

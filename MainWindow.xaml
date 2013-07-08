@@ -5,7 +5,14 @@
     <StackPanel Orientation="Vertical">
 
         <StackPanel Orientation="Horizontal" Height="100"
-                    Background="Khaki" >
+                    Background="#FF006332" >
+            <Rectangle Width="20" Opacity="0.0" />
+            <Label x:Name="lbl0" Style="{StaticResource LabelDisplayStyle}" />            
+            <Label x:Name="lbl1" Style="{StaticResource LabelDisplayStyle}" />
+            <Label x:Name="lbl2" Style="{StaticResource LabelDisplayStyle}" />
+            <Label x:Name="lbl3" Style="{StaticResource LabelDisplayStyle}" />
+            <Label x:Name="lbl4" Style="{StaticResource LabelDisplayStyle}" />
+            <Label x:Name="lbl5" Style="{StaticResource LabelDisplayStyle}" />
         </StackPanel>
         
         <Canvas x:Name="canvasKeyboard">
@@ -17,9 +24,7 @@
                     >
                 0
             </Button>
-                    
-            
-            
+                                
             <Button x:Name="btn1" Style="{StaticResource ButtonKeyboardStyle}"
                     Canvas.Left="20"
                     Canvas.Top="170"
@@ -88,13 +93,43 @@
             <Button x:Name="btn9" Style="{StaticResource ButtonKeyboardStyle}"
                     Canvas.Left="180"
                     Canvas.Top="50"
-                    Click="btn9_Click"
+                    Click="btn_Click"
                     >
                 9
             </Button>
             
-            
-            
+            <Button x:Name="btnPlus" Style="{StaticResource ButtonKeyboardStyle}"
+                    Canvas.Left="260"
+                    Canvas.Top="50"
+                    Click="btn_Click"
+                    >
+                +
+            </Button>
+
+            <Button x:Name="btnMinus" Style="{StaticResource ButtonKeyboardStyle}"
+                    Canvas.Left="260"
+                    Canvas.Top="110"
+                    Click="btn_Click"
+                    >
+                -
+            </Button>
+
+            <Button x:Name="btnMult" Style="{StaticResource ButtonKeyboardStyle}"
+                    Canvas.Left="260"
+                    Canvas.Top="170"
+                    Click="btn_Click"
+                    >
+                *
+            </Button>
+
+            <Button x:Name="btnDiv" Style="{StaticResource ButtonKeyboardStyle}"
+                    Canvas.Left="260"
+                    Canvas.Top="230"
+                    Click="btn_Click"
+                    >
+                /
+            </Button>
+
         </Canvas>
 
     </StackPanel>
