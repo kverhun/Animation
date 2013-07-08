@@ -28,7 +28,7 @@ namespace Animation
                 return;
             else if (btnIndex < 10)
                 model.AcceptStr(btnIndex.ToString());
-            else if (btnIndex < 15)
+            else if (btnIndex < 16)
             {
                 switch (btnIndex)
                 {

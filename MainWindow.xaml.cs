@@ -36,7 +36,7 @@ namespace Animation
             labels = panelDisplay.Children;
 
             this.state = true;
-            SwapState();
+            //SwapState();
 
             ViewModel vm = new ViewModel(this);
 
@@ -258,5 +258,25 @@ namespace Animation
         }
 
         public event EventHandler<EventArgs> onBtnPressed;
+
+        private void btn_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (state == false)
+            {
+                for (int i = 0; i < labels.Count; ++i)
+                {
+                    //((labels[i] as Label).Background as SolidColorBrush).Color = System.Windows.Media.Colors.Black;
+                    
+                }
+            }
+            else
+            {
+                for (int i = 0; i < labels.Count; ++i)
+                {
+                    ((labels[i] as Label).Background as SolidColorBrush).Color = System.Windows.Media.Colors.LightYellow;
+
+                }
+            }
+        }
     }
 }
