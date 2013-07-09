@@ -48,6 +48,7 @@ namespace Animation
         {
             btnPressed(sender, e);          
             MixButtons(0.25, 0);   
+            //MixButtonsTogether(0.3);
         }
 
         private void onBtn_Click(object sender, RoutedEventArgs e)
@@ -86,6 +87,39 @@ namespace Animation
                 SwapButtons(swappers[i], swapperValues[i], secDuration, secWait + i*(secDuration*1));               
             }
         }
+
+
+        private void MixButtonsTogether(double secDuration)
+        {
+            int count = canvasKeyboard.Children.Count;
+            int[] swap = new int[count];
+            int[] values = new int[count];
+            bool[] done = new bool[count];
+            for (int i = 0; i < count; ++i)
+                values[i] = i;
+
+            int[] swappers = new int[count / 2];
+            int[] swapperValues = new int[swappers.Length];
+            for (int i = 0; i < swappers.Length; ++i)
+            {
+                int current = generator.Next() % (count - i);
+                swappers[i] = values[current];
+                values[current] = values[count - 1 - i];
+            }
+
+            for (int i = 0; i < swapperValues.Length; ++i)
+            {
+                int current = generator.Next() % (count - i - swappers.Length);
+                swapperValues[i] = values[current];
+                values[current] = values[count - i - 1 - swappers.Length];
+            }
+
+            for (int i = 0; i < swappers.Length; ++i)
+            {
+                SwapButtons(swappers[i], swapperValues[i], secDuration, 0);
+            }
+        }
+
 
         // runs animation for swapping two controls
         private void SwapButtons(int ind1, int ind2, double secDuration, double secWait)
